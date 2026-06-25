@@ -1,0 +1,257 @@
+<div class="flex min-h-screen bg-slate-950 text-slate-100">
+  
+  <!-- SIDEBAR NAVIGATION PANEL -->
+  <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex">
+    <div>
+      <!-- Dashboard Logo -->
+      <div class="h-16 flex items-center gap-3 px-6 border-b border-slate-800">
+        <div class="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center shadow-lg shadow-sky-500/25">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="white" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+          </svg>
+        </div>
+        <span class="font-extrabold text-lg tracking-wide bg-gradient-to-r from-white to-slate-400 bg-clip-text text-transparent">College Compass</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="p-4 space-y-2">
+        <a href="#" class="flex items-center gap-3 px-4 py-3 bg-sky-500/10 text-sky-400 font-medium rounded-xl border border-sky-500/20 transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+          </svg>
+          Dashboard Overview
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-xl transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
+          </svg>
+          Buildings
+        </a>
+        <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-xl transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
+          </svg>
+          QR Configurations
+        </a>
+      </nav>
+    </div>
+
+    <!-- Active User & Logout Panel -->
+    <div class="p-4 border-t border-slate-800">
+      <div *ngIf="authService.currentUser() as user" class="flex items-center gap-3 mb-4">
+        <img [src]="user.photoURL || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop'" alt="User profile photo" class="w-10 h-10 rounded-full border border-sky-500/30">
+        <div class="overflow-hidden">
+          <p class="text-sm font-semibold text-white truncate">{{ user.displayName || 'Guest User' }}</p>
+          <p class="text-xs text-slate-400 truncate">{{ user.email }}</p>
+        </div>
+      </div>
+      <button 
+        (click)="logout()"
+        class="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-800 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 text-slate-300 font-medium rounded-xl border border-transparent transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15M12 9l-3 3m0 0 3 3m-3-3h12.75" />
+        </svg>
+        Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN DASHBOARD CONTENT AREA -->
+  <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+    <!-- Top Navbar Header -->
+    <header class="h-16 border-b border-slate-800 bg-slate-900/60 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-30">
+      <div class="flex items-center gap-4">
+        <h2 class="text-xl font-bold tracking-tight text-white">Dashboard Console</h2>
+        <span class="px-2.5 py-0.5 text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span> Live Connection
+        </span>
+      </div>
+      <div class="flex items-center gap-4">
+        <span *ngIf="seedingStatus()" class="text-xs font-semibold px-2.5 py-1 bg-sky-500/10 text-sky-400 border border-sky-500/20 rounded-lg animate-pulse">
+          {{ seedingStatus() }}
+        </span>
+        <button 
+          (click)="seedData()"
+          class="flex items-center gap-1.5 px-3 py-1.5 bg-sky-500 hover:bg-sky-600 active:scale-95 text-slate-900 text-xs font-bold rounded-lg shadow shadow-sky-500/25 transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+          </svg>
+          Seed Sample Data
+        </button>
+        <!-- Quick Stats indicator -->
+        <span class="text-xs text-slate-400 hidden sm:inline">Last Sync: Just now</span>
+      </div>
+    </header>
+
+    <!-- Content Workspace -->
+    <div class="p-6 space-y-6">
+      
+      <!-- LOADING SPINNER GRID COVER -->
+      <div *ngIf="loading()" class="h-96 flex items-center justify-center">
+        <div class="flex flex-col items-center gap-3">
+          <div class="w-12 h-12 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
+          <span class="text-slate-400 text-sm font-medium">Fetching College Map Structure...</span>
+        </div>
+      </div>
+
+      <div *ngIf="!loading()" class="space-y-6">
+        <!-- STATS OVERVIEW CARDS -->
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          <!-- Buildings Card -->
+          <div class="p-6 bg-slate-900 border border-slate-800 rounded-2xl shadow-lg relative overflow-hidden transition-all hover:border-slate-700">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-sky-500/5 rounded-full blur-xl translate-x-5 -translate-y-5"></div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Campus Buildings</p>
+                <h3 class="text-3xl font-extrabold text-white mt-2">{{ totalBuildingsCount() }}</h3>
+              </div>
+              <div class="w-12 h-12 bg-sky-500/10 text-sky-400 rounded-xl flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.332A48.36 48.36 0 0 0 12 9.75c-2.551 0-5.056.2-7.5.582V21M3 21h18M12 6.75h.008v.008H12V6.75Z" />
+                </svg>
+              </div>
+            </div>
+            <div class="mt-4 text-xs text-slate-500 flex items-center gap-1">
+              <span class="text-sky-400 font-semibold">Active</span> mapping in database.
+            </div>
+          </div>
+
+          <!-- Rooms Card -->
+          <div class="p-6 bg-slate-900 border border-slate-800 rounded-2xl shadow-lg relative overflow-hidden transition-all hover:border-slate-700">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-violet-500/5 rounded-full blur-xl translate-x-5 -translate-y-5"></div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">Mapped Rooms</p>
+                <h3 class="text-3xl font-extrabold text-white mt-2">{{ totalRoomsCount() }}</h3>
+              </div>
+              <div class="w-12 h-12 bg-violet-500/10 text-violet-400 rounded-xl flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75c.621 0 1.125.504 1.125 1.125v1.875c0 .621-.504 1.125-1.125 1.125H5.625A1.125 1.125 0 0 1 4.5 7.5V5.625c0-.621.504-1.125 1.125-1.125Z" />
+                </svg>
+              </div>
+            </div>
+            <div class="mt-4 text-xs text-slate-500">
+              Classes, labs, and admin coordinates.
+            </div>
+          </div>
+
+          <!-- QR Codes Card -->
+          <div class="p-6 bg-slate-900 border border-slate-800 rounded-2xl shadow-lg relative overflow-hidden transition-all hover:border-slate-700">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-xl translate-x-5 -translate-y-5"></div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-slate-400 uppercase tracking-wider">QR Entry Nodes</p>
+                <h3 class="text-3xl font-extrabold text-white mt-2">{{ totalQrCount() }}</h3>
+              </div>
+              <div class="w-12 h-12 bg-amber-500/10 text-amber-400 rounded-xl flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5ZM13.5 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5Z" />
+                </svg>
+              </div>
+            </div>
+            <div class="mt-4 text-xs text-slate-500">
+              QR gates deployed for navigation.
+            </div>
+          </div>
+        </section>
+
+        <!-- ROOMS FILTER & TABLE VIEW PORT -->
+        <section class="bg-slate-900 border border-slate-800 rounded-2xl shadow-lg">
+          <!-- Table Actions Header -->
+          <div class="p-6 border-b border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h4 class="text-lg font-bold text-white">Campus Rooms Directory</h4>
+              <p class="text-slate-400 text-xs mt-1">Configure layout coordinates and entry-gate linkages.</p>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-3">
+              <!-- Search Input -->
+              <div class="relative min-w-[200px]">
+                <input 
+                  type="text" 
+                  [ngModel]="searchQuery()" 
+                  (ngModelChange)="searchQuery.set($event)"
+                  placeholder="Search rooms, buildings..."
+                  class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 text-sm py-2 pl-9 pr-4 rounded-xl text-slate-200 outline-none transition-all placeholder:text-slate-500">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-slate-500 absolute left-3 top-3">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
+                </svg>
+              </div>
+
+              <!-- Type Select Filter -->
+              <select 
+                [ngModel]="selectedTypeFilter()" 
+                (ngModelChange)="selectedTypeFilter.set($event)"
+                class="bg-slate-950 border border-slate-800 focus:border-sky-500 text-sm py-2 px-3 rounded-xl text-slate-200 outline-none transition-all">
+                <option value="all">All Room Types</option>
+                <option value="classroom">Classrooms</option>
+                <option value="lab">Laboratories</option>
+                <option value="office">Offices</option>
+                <option value="seminar">Seminar Halls</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- TABLE COMPONENT -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-800 text-slate-400 text-xs font-semibold uppercase bg-slate-950/40">
+                  <th class="px-6 py-4">Room No.</th>
+                  <th class="px-6 py-4">Room Name</th>
+                  <th class="px-6 py-4">Building</th>
+                  <th class="px-6 py-4">Room Type</th>
+                  <th class="px-6 py-4">Floor Coordinates (X, Y)</th>
+                  <th class="px-6 py-4">Linked QR Gate</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800 text-sm text-slate-300">
+                <tr *ngFor="let room of filteredRooms()" class="hover:bg-slate-800/20 transition-colors">
+                  <td class="px-6 py-4 font-mono font-bold text-white">{{ room.number }}</td>
+                  <td class="px-6 py-4">{{ room.name }}</td>
+                  <td class="px-6 py-4">
+                    <span class="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-md border border-slate-700">
+                      {{ room.buildingName || 'Building N/A' }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span 
+                      [ngClass]="{
+                        'bg-sky-500/10 text-sky-400 border-sky-500/20': room.type === 'classroom',
+                        'bg-purple-500/10 text-purple-400 border-purple-500/20': room.type === 'lab',
+                        'bg-amber-500/10 text-amber-400 border-amber-500/20': room.type === 'office',
+                        'bg-rose-500/10 text-rose-400 border-rose-500/20': room.type === 'seminar'
+                      }"
+                      class="px-2.5 py-0.5 rounded-full text-xs font-semibold border">
+                      {{ room.type | titlecase }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 font-mono text-xs text-slate-400">
+                    X: {{ room.x }}px, Y: {{ room.y }}px
+                  </td>
+                  <td class="px-6 py-4">
+                    <span *ngIf="room.qrCodeId" class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded">
+                      {{ room.qrCodeId }}
+                    </span>
+                    <span *ngIf="!room.qrCodeId" class="text-xs text-slate-500 italic">
+                      No Gate Linked
+                    </span>
+                  </td>
+                </tr>
+
+                <!-- No results fallback -->
+                <tr *ngIf="filteredRooms().length === 0">
+                  <td colspan="6" class="text-center py-8 text-slate-500">
+                    No matching campus rooms found for query.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </main>
+</div>
