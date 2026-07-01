@@ -22,6 +22,10 @@ export class DashboardComponent implements OnInit {
   qrCodes = signal<QrCode[]>([]);
   loading = signal<boolean>(true);
   activeTab = signal<string>('rooms');
+
+  switchTab(tabName: string) {
+    this.activeTab.set(tabName);
+  }
   
   // Search & Filter State
   searchQuery = signal<string>('');
