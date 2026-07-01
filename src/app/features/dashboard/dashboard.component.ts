@@ -21,6 +21,7 @@ export class DashboardComponent implements OnInit {
   rooms = signal<Room[]>([]);
   qrCodes = signal<QrCode[]>([]);
   loading = signal<boolean>(true);
+  activeTab = signal<string>('rooms');
   
   // Search & Filter State
   searchQuery = signal<string>('');
