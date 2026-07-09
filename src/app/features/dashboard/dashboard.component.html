@@ -421,6 +421,93 @@
           </button>
         </div>
 
+        <!-- INTERACTIVE VECTOR FLOOR PLAN BLUEPRINT CANVAS -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-lg flex flex-col space-y-4">
+          <div>
+            <h5 class="text-md font-bold text-white">Interactive 2D Floor Plan Mapper</h5>
+            <p class="text-slate-400 text-xs mt-0.5">Click anywhere on the blue vector corridors to auto-prefill X and Y coordinates and map a new room pin instantly.</p>
+          </div>
+          
+          <div class="relative w-full aspect-[2/1] bg-slate-950/80 border border-slate-800 rounded-xl overflow-hidden group select-none">
+            <!-- Grid Background Lines -->
+            <div class="absolute inset-0 bg-[linear-gradient(to_right,#020617_1px,transparent_1px),linear-gradient(to_bottom,#020617_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none opacity-40"></div>
+            
+            <svg 
+              viewBox="0 0 800 400" 
+              class="w-full h-full cursor-crosshair relative z-10" 
+              (click)="onCanvasClick($event)">
+              
+              <!-- Blueprint Corridor Outlines -->
+              <!-- Main Horizontal Corridor -->
+              <rect x="50" y="170" width="700" height="60" rx="6" class="fill-sky-500/5 stroke-sky-500/20 stroke-2" stroke-dasharray="6,4" />
+              <!-- Left Vertical Corridor -->
+              <rect x="100" y="50" width="60" height="300" rx="6" class="fill-sky-500/5 stroke-sky-500/20 stroke-2" stroke-dasharray="6,4" />
+              <!-- Right Vertical Corridor -->
+              <rect x="640" y="50" width="60" height="300" rx="6" class="fill-sky-500/5 stroke-sky-500/20 stroke-2" stroke-dasharray="6,4" />
+              <!-- Central Lobby Hub -->
+              <rect x="350" y="150" width="100" height="100" rx="50" class="fill-sky-500/10 stroke-sky-500/30 stroke-2" />
+              
+              <!-- Labels for corridors and halls -->
+              <text x="400" y="205" class="text-[10px] fill-sky-400/40 font-bold font-mono text-anchor-middle pointer-events-none">Central Lobby Hub</text>
+              <text x="130" y="330" class="text-[9px] fill-sky-400/30 font-bold font-mono text-anchor-middle pointer-events-none" transform="rotate(-90 130 330)">Left Wing corridor</text>
+              <text x="670" y="330" class="text-[9px] fill-sky-400/30 font-bold font-mono text-anchor-middle pointer-events-none" transform="rotate(-90 670 330)">Right Wing corridor</text>
+              
+              <!-- Placed Room Pins circles -->
+              <g *ngFor="let room of rooms()">
+                <!-- Outer glowing aura for rooms -->
+                <circle 
+                  [attr.cx]="room.x" 
+                  [attr.cy]="room.y" 
+                  r="12" 
+                  [ngClass]="{
+                    'fill-sky-500/10': room.type === 'classroom',
+                    'fill-purple-500/10': room.type === 'lab',
+                    'fill-amber-500/10': room.type === 'office',
+                    'fill-rose-500/10': room.type === 'seminar'
+                  }"
+                  class="animate-pulse opacity-60">
+                </circle>
+                
+                <!-- Main Core pin -->
+                <circle 
+                  [attr.cx]="room.x" 
+                  [attr.cy]="room.y" 
+                  r="6" 
+                  [ngClass]="{
+                    'fill-sky-400 stroke-sky-200': room.type === 'classroom',
+                    'fill-purple-400 stroke-purple-200': room.type === 'lab',
+                    'fill-amber-400 stroke-amber-200': room.type === 'office',
+                    'fill-rose-400 stroke-rose-200': room.type === 'seminar'
+                  }"
+                  class="stroke-2 cursor-pointer hover:scale-125 transition-transform">
+                  <title>{{ room.number }} - {{ room.name }} ({{ room.type | titlecase }})</title>
+                </circle>
+                
+                <!-- Room Code text label -->
+                <text 
+                  [attr.x]="room.x" 
+                  [attr.y]="room.y - 12" 
+                  class="text-[8px] fill-slate-300 font-bold font-mono text-anchor-middle pointer-events-none">
+                  {{ room.number }}
+                </text>
+              </g>
+            </svg>
+            
+            <!-- Canvas Legend Badge overlay -->
+            <div class="absolute bottom-3 left-3 bg-slate-900/90 border border-slate-800 rounded-lg px-2.5 py-1.5 flex items-center gap-4 text-[9px] font-semibold text-slate-400 z-20 backdrop-blur">
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-sky-400 rounded-full"></span> Classroom</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-purple-400 rounded-full"></span> Lab</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-amber-400 rounded-full"></span> Office</span>
+              <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-rose-400 rounded-full"></span> Seminar</span>
+            </div>
+            
+            <!-- Canvas Tips label overlay -->
+            <div class="absolute top-3 right-3 bg-slate-900/90 border border-slate-800 rounded-lg px-2 py-1 text-[9px] text-sky-400 font-mono z-20 backdrop-blur">
+              ✨ Click on map to place pin
+            </div>
+          </div>
+        </div>
+
         <!-- Grid Panels for CRUD management -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 

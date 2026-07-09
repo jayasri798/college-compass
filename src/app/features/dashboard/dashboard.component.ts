@@ -306,6 +306,27 @@ export class DashboardComponent implements OnInit {
     printWindow.document.close();
   }
 
+  onCanvasClick(event: MouseEvent) {
+    const svg = event.currentTarget as SVGGraphicsElement;
+    const rect = svg.getBoundingClientRect();
+    
+    // Scale relative mouse click coordinates to fit 800x400 viewBox
+    const x = Math.round(((event.clientX - rect.left) / rect.width) * 800);
+    const y = Math.round(((event.clientY - rect.top) / rect.height) * 400);
+    
+    // Pre-populate coordinate model and open Add Room modal
+    this.roomForm.update(form => ({
+      ...form,
+      number: '',
+      name: '',
+      type: 'classroom',
+      x: x,
+      y: y,
+      qrCodeId: ''
+    }));
+    this.showRoomModal.set(true);
+  }
+
   seedingStatus = signal<string | null>(null);
 
   async seedData() {
