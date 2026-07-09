@@ -5,7 +5,8 @@ import {
   collectionData, 
   getDocs,
   doc,
-  setDoc
+  setDoc,
+  deleteDoc
 } from '@angular/fire/firestore';
 import { Observable, from, forkJoin, of } from 'rxjs';
 import { map, switchMap, catchError } from 'rxjs/operators';
@@ -201,5 +202,61 @@ export class CampusDataService {
       console.error('Failed to seed Firestore data:', error);
       throw error;
     }
+  }
+
+  // CRUD Operations for Rooms
+  addRoom(room: Partial<Room>): Promise<void> {
+    const roomId = room.id || `room-${room.number}`;
+    const roomRef = doc(this.firestore, `buildings/MainBlock/floors/Floor3/rooms/${roomId}`);
+    return setDoc(roomRef, {
+      number: room.number || '',
+      name: room.name || '',
+      type: room.type || 'classroom',
+      x: Number(room.x) || 0,
+      y: Number(room.y) || 0,
+      qrCodeId: room.qrCodeId || ''
+    });
+  }
+
+  deleteRoom(roomId: string): Promise<void> {
+    const roomRef = doc(this.firestore, `buildings/MainBlock/floors/Floor3/rooms/${roomId}`);
+    return deleteDoc(roomRef);
+  }
+
+  // CRUD Operations for Buildings
+  addBuilding(building: Partial<Building>): Promise<void> {
+    const code = building.code || 'BLDG';
+    const buildingRef = doc(this.firestore, `buildings/${code}`);
+    return setDoc(buildingRef, {
+      name: building.name || '',
+      code: code,
+      totalFloors: Number(building.totalFloors) || 1,
+      latitude: Number(building.latitude) || 0,
+      longitude: Number(building.longitude) || 0
+    });
+  }
+
+  deleteBuilding(code: string): Promise<void> {
+    const buildingRef = doc(this.firestore, `buildings/${code}`);
+    return deleteDoc(buildingRef);
+  }
+
+  // CRUD Operations for QR Codes
+  addQrCode(qr: Partial<QrCode>): Promise<void> {
+    const qrId = qr.id || `qr-${qr.code?.toLowerCase() || Math.random().toString(36).substr(2, 9)}`;
+    const qrRef = doc(this.firestore, `qr_codes/${qrId}`);
+    return setDoc(qrRef, {
+      code: qr.code || '',
+      locationName: qr.locationName || '',
+      targetBuildingId: qr.targetBuildingId || 'MainBlock',
+      targetFloorId: qr.targetFloorId || 'Floor3',
+      targetRoomId: qr.targetRoomId || '',
+      createdAt: new Date().toISOString()
+    });
+  }
+
+  deleteQrCode(qrId: string): Promise<void> {
+    const qrRef = doc(this.firestore, `qr_codes/${qrId}`);
+    return deleteDoc(qrRef);
   }
 }

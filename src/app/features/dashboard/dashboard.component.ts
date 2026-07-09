@@ -26,6 +26,100 @@ export class DashboardComponent implements OnInit {
   switchTab(tabName: string) {
     this.activeTab.set(tabName);
   }
+
+  // Modals Visibility
+  showRoomModal = signal<boolean>(false);
+  showBuildingModal = signal<boolean>(false);
+  showQrModal = signal<boolean>(false);
+
+  // Form Models
+  roomForm = signal<any>({ number: '', name: '', type: 'classroom', x: 0, y: 0, qrCodeId: '' });
+  buildingForm = signal<any>({ name: '', code: '', totalFloors: 1, latitude: 0, longitude: 0 });
+  qrForm = signal<any>({ code: '', locationName: '', targetRoomId: '', targetBuildingId: 'MainBlock', targetFloorId: 'Floor3' });
+
+  // Operations
+  openRoomModal() {
+    this.roomForm.set({ number: '', name: '', type: 'classroom', x: 0, y: 0, qrCodeId: '' });
+    this.showRoomModal.set(true);
+  }
+
+  async saveRoom() {
+    try {
+      await this.campusService.addRoom(this.roomForm());
+      this.showRoomModal.set(false);
+      this.loadCampusData();
+    } catch (err: any) {
+      alert(`Error saving room: ${err.message}`);
+    }
+  }
+
+  async deleteRoom(roomId: string | undefined, event: Event) {
+    event.stopPropagation();
+    if (!roomId) return;
+    if (confirm('Are you sure you want to delete this room?')) {
+      try {
+        await this.campusService.deleteRoom(roomId);
+        this.loadCampusData();
+      } catch (err: any) {
+        alert(`Error deleting room: ${err.message}`);
+      }
+    }
+  }
+
+  openBuildingModal() {
+    this.buildingForm.set({ name: '', code: '', totalFloors: 1, latitude: 0, longitude: 0 });
+    this.showBuildingModal.set(true);
+  }
+
+  async saveBuilding() {
+    try {
+      await this.campusService.addBuilding(this.buildingForm());
+      this.showBuildingModal.set(false);
+      this.loadCampusData();
+    } catch (err: any) {
+      alert(`Error saving building: ${err.message}`);
+    }
+  }
+
+  async deleteBuilding(code: string, event: Event) {
+    event.stopPropagation();
+    if (confirm('Are you sure you want to delete this building?')) {
+      try {
+        await this.campusService.deleteBuilding(code);
+        this.loadCampusData();
+      } catch (err: any) {
+        alert(`Error deleting building: ${err.message}`);
+      }
+    }
+  }
+
+  openQrModal() {
+    this.qrForm.set({ code: '', locationName: '', targetRoomId: '', targetBuildingId: 'MainBlock', targetFloorId: 'Floor3' });
+    this.showQrModal.set(true);
+  }
+
+  async saveQrCode() {
+    try {
+      await this.campusService.addQrCode(this.qrForm());
+      this.showQrModal.set(false);
+      this.loadCampusData();
+    } catch (err: any) {
+      alert(`Error saving QR Code: ${err.message}`);
+    }
+  }
+
+  async deleteQrCode(qrId: string | undefined, event: Event) {
+    event.stopPropagation();
+    if (!qrId) return;
+    if (confirm('Are you sure you want to delete this QR Code?')) {
+      try {
+        await this.campusService.deleteQrCode(qrId);
+        this.loadCampusData();
+      } catch (err: any) {
+        alert(`Error deleting QR Code: ${err.message}`);
+      }
+    }
+  }
   
   // Search & Filter State
   searchQuery = signal<string>('');
