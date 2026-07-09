@@ -44,6 +44,10 @@ export class DashboardComponent implements OnInit {
   }
 
   async saveRoom() {
+    if (!this.authService.isAdmin()) {
+      alert('Access Denied: Only administrators can add rooms.');
+      return;
+    }
     try {
       await this.campusService.addRoom(this.roomForm());
       this.showRoomModal.set(false);
@@ -55,6 +59,10 @@ export class DashboardComponent implements OnInit {
 
   async deleteRoom(roomId: string | undefined, event: Event) {
     event.stopPropagation();
+    if (!this.authService.isAdmin()) {
+      alert('Access Denied: Only administrators can delete rooms.');
+      return;
+    }
     if (!roomId) return;
     if (confirm('Are you sure you want to delete this room?')) {
       try {
@@ -72,6 +80,10 @@ export class DashboardComponent implements OnInit {
   }
 
   async saveBuilding() {
+    if (!this.authService.isAdmin()) {
+      alert('Access Denied: Only administrators can add buildings.');
+      return;
+    }
     try {
       await this.campusService.addBuilding(this.buildingForm());
       this.showBuildingModal.set(false);
@@ -83,6 +95,10 @@ export class DashboardComponent implements OnInit {
 
   async deleteBuilding(code: string, event: Event) {
     event.stopPropagation();
+    if (!this.authService.isAdmin()) {
+      alert('Access Denied: Only administrators can delete buildings.');
+      return;
+    }
     if (confirm('Are you sure you want to delete this building?')) {
       try {
         await this.campusService.deleteBuilding(code);
@@ -99,6 +115,10 @@ export class DashboardComponent implements OnInit {
   }
 
   async saveQrCode() {
+    if (!this.authService.isAdmin()) {
+      alert('Access Denied: Only administrators can add QR codes.');
+      return;
+    }
     try {
       await this.campusService.addQrCode(this.qrForm());
       this.showQrModal.set(false);
@@ -110,6 +130,10 @@ export class DashboardComponent implements OnInit {
 
   async deleteQrCode(qrId: string | undefined, event: Event) {
     event.stopPropagation();
+    if (!this.authService.isAdmin()) {
+      alert('Access Denied: Only administrators can delete QR codes.');
+      return;
+    }
     if (!qrId) return;
     if (confirm('Are you sure you want to delete this QR Code?')) {
       try {
@@ -180,6 +204,10 @@ export class DashboardComponent implements OnInit {
   seedingStatus = signal<string | null>(null);
 
   async seedData() {
+    if (!this.authService.isAdmin()) {
+      alert('Access Denied: Only administrators can seed the database.');
+      return;
+    }
     this.seedingStatus.set('Seeding database...');
     try {
       await this.campusService.seedSampleData();

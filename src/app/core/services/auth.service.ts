@@ -21,12 +21,26 @@ export class AuthService {
 
   // Angular Signal to hold the current user state reactively
   currentUser = signal<User | null>(null);
+  isAdmin = signal<boolean>(false);
   loading = signal<boolean>(true);
 
   constructor() {
     this.user$.subscribe((authUser) => {
       this.currentUser.set(authUser);
       this.loading.set(false);
+      
+      if (authUser && authUser.email) {
+        const email = authUser.email.toLowerCase();
+        // Admin criteria: Jaya Sri, college-compass domain, or general admin keywords
+        this.isAdmin.set(
+          email === 'pakanatijayasri@gmail.com' ||
+          email.endsWith('@college-compass.com') ||
+          email.startsWith('admin') ||
+          email.endsWith('@admin.com')
+        );
+      } else {
+        this.isAdmin.set(false);
+      }
     });
   }
 
