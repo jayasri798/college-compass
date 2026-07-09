@@ -458,9 +458,12 @@
                 container.setAttribute("gps-entity-place", `latitude: ${gps.lat}; longitude: ${gps.lon};`);
 
                 if (i === path.length - 1) {
-                    // Final Target Room Indicator: Glowing Red Cone pointer and 3D Label
+                    // Final Target Room Indicator: Green if free, Red if occupied
+                    const isRoomFree = pt.isFree !== false;
+                    const color = isRoomFree ? "#10b981" : "#ef4444";
+
                     const cone = document.createElement("a-cone");
-                    cone.setAttribute("color", "#f43f5e");
+                    cone.setAttribute("color", color);
                     cone.setAttribute("height", "2.5");
                     cone.setAttribute("radius-bottom", "0.8");
                     cone.setAttribute("radius-top", "0");
@@ -469,11 +472,12 @@
                     cone.setAttribute("animation", "property: position; to: 0 2.5 0; dir: alternate; dur: 1200; loop: true; easing: easeInOutQuad");
                     
                     const label = document.createElement("a-text");
-                    label.setAttribute("value", `Room ${pt.number}\n${pt.name}`);
+                    let statusLabel = isRoomFree ? "FREE" : `OCCUPIED\nClass: ${pt.currentSubject || 'In Progress'}`;
+                    label.setAttribute("value", `Room ${pt.number} (${statusLabel})\n${pt.name}`);
                     label.setAttribute("color", "#ffffff");
                     label.setAttribute("align", "center");
                     label.setAttribute("scale", "3.5 3.5 3.5");
-                    label.setAttribute("position", "0 6 0");
+                    label.setAttribute("position", "0 6.5 0");
                     label.setAttribute("look-at", "[gps-camera]");
 
                     container.appendChild(cone);
@@ -493,7 +497,12 @@
                 if (i === path.length - 1) {
                     container.addEventListener('gps-entity-place-update-positon', (e) => {
                         const dist = e.detail.distance.toFixed(1);
-                        statusText.innerHTML = `🏁 Targeting <b>Room ${pt.number}</b> <b>(${dist}m away)</b>`;
+                        const isRoomFree = pt.isFree !== false;
+                        if (isRoomFree) {
+                            statusText.innerHTML = `🏁 Targeting <b>Room ${pt.number} (FREE)</b> <b>(${dist}m away)</b>`;
+                        } else {
+                            statusText.innerHTML = `🏁 Targeting <b>Room ${pt.number} (OCCUPIED: ${pt.currentSubject || 'Class'})</b> <b>(${dist}m away)</b>`;
+                        }
                     });
                 }
 

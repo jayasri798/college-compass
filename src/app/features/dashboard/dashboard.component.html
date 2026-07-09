@@ -230,6 +230,7 @@
                   <th class="px-6 py-4">Room Name</th>
                   <th class="px-6 py-4">Building</th>
                   <th class="px-6 py-4">Room Type</th>
+                  <th class="px-6 py-4">Occupancy Status</th>
                   <th class="px-6 py-4">Floor Coordinates (X, Y)</th>
                   <th class="px-6 py-4">Linked QR Gate</th>
                 </tr>
@@ -255,6 +256,18 @@
                       {{ room.type | titlecase }}
                     </span>
                   </td>
+                  <td class="px-6 py-4">
+                    <span 
+                      [ngClass]="{
+                        'bg-emerald-500/10 text-emerald-400 border-emerald-500/20': room.isFree !== false,
+                        'bg-red-500/10 text-red-400 border-red-500/20': room.isFree === false
+                      }"
+                      class="px-2.5 py-0.5 rounded-full text-xs font-semibold border flex items-center gap-1.5 w-fit">
+                      <span [ngClass]="room.isFree !== false ? 'bg-emerald-400' : 'bg-red-400'" class="w-1.5 h-1.5 rounded-full animate-pulse"></span>
+                      {{ room.isFree !== false ? 'Free' : (room.currentSubject ? room.currentSubject : 'Occupied') }}
+                      <span *ngIf="room.isFree === false && room.occupiedBy" class="text-[10px] text-red-300/80">({{room.occupiedBy}})</span>
+                    </span>
+                  </td>
                   <td class="px-6 py-4 font-mono text-xs text-slate-400">
                     X: {{ room.x }}px, Y: {{ room.y }}px
                   </td>
@@ -270,7 +283,7 @@
 
                 <!-- No results fallback -->
                 <tr *ngIf="filteredRooms().length === 0">
-                  <td colspan="6" class="text-center py-8 text-slate-500">
+                  <td colspan="7" class="text-center py-8 text-slate-500">
                     No matching campus rooms found for query.
                   </td>
                 </tr>
@@ -671,6 +684,20 @@
         <div>
           <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Linked QR Gate ID (Optional)</label>
           <input type="text" [(ngModel)]="roomForm().qrCodeId" name="qrCodeId" placeholder="e.g. qr-cse-lab" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl px-4 py-2.5 text-white text-sm outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Current Subject / Class</label>
+            <input type="text" [(ngModel)]="roomForm().currentSubject" name="currentSubject" placeholder="e.g. Compiler Design" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl px-4 py-2.5 text-white text-sm outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 uppercase mb-1">Occupied By</label>
+            <input type="text" [(ngModel)]="roomForm().occupiedBy" name="occupiedBy" placeholder="e.g. CSE-A 3rd Year" class="w-full bg-slate-950 border border-slate-800 focus:border-sky-500 rounded-xl px-4 py-2.5 text-white text-sm outline-none">
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="checkbox" [(ngModel)]="roomForm().isFree" name="isFree" id="isFree" class="w-4 h-4 bg-slate-950 border border-slate-800 focus:border-sky-500 rounded">
+          <label for="isFree" class="text-xs font-semibold text-slate-400 uppercase cursor-pointer">Room is currently Free</label>
         </div>
         <div class="pt-4 flex justify-end gap-3">
           <button type="button" (click)="showRoomModal.set(false)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold rounded-xl transition-all">Cancel</button>

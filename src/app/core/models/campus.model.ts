@@ -25,6 +25,9 @@ export interface Room {
   buildingId?: string; // Hydrated helper field
   floorId?: string;    // Hydrated helper field
   buildingName?: string; // Hydrated helper field
+  isFree?: boolean;
+  currentSubject?: string;
+  occupiedBy?: string;
 }
 
 export interface QrCode {

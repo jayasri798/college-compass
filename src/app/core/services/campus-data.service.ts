@@ -222,7 +222,10 @@ export class CampusDataService {
       type: room.type || 'classroom',
       x: Number(room.x) || 0,
       y: Number(room.y) || 0,
-      qrCodeId: room.qrCodeId || ''
+      qrCodeId: room.qrCodeId || '',
+      isFree: room.isFree !== undefined ? room.isFree : true,
+      currentSubject: room.currentSubject || '',
+      occupiedBy: room.occupiedBy || ''
     });
   }
 

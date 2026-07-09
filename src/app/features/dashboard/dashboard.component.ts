@@ -35,13 +35,13 @@ export class DashboardComponent implements OnInit {
   showQrModal = signal<boolean>(false);
 
   // Form Models
-  roomForm = signal<any>({ number: '', name: '', type: 'classroom', x: 0, y: 0, qrCodeId: '' });
+  roomForm = signal<any>({ number: '', name: '', type: 'classroom', x: 0, y: 0, qrCodeId: '', isFree: true, currentSubject: '', occupiedBy: '' });
   buildingForm = signal<any>({ name: '', code: '', totalFloors: 1, latitude: 0, longitude: 0 });
   qrForm = signal<any>({ code: '', locationName: '', targetRoomId: '', targetBuildingId: 'MainBlock', targetFloorId: 'Floor3' });
 
   // Operations
   openRoomModal() {
-    this.roomForm.set({ number: '', name: '', type: 'classroom', x: 0, y: 0, qrCodeId: '' });
+    this.roomForm.set({ number: '', name: '', type: 'classroom', x: 0, y: 0, qrCodeId: '', isFree: true, currentSubject: '', occupiedBy: '' });
     this.showRoomModal.set(true);
   }
 
@@ -322,7 +322,10 @@ export class DashboardComponent implements OnInit {
       type: 'classroom',
       x: x,
       y: y,
-      qrCodeId: ''
+      qrCodeId: '',
+      isFree: true,
+      currentSubject: '',
+      occupiedBy: ''
     }));
     this.showRoomModal.set(true);
   }
