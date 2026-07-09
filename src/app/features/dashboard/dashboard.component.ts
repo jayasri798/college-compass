@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CampusDataService } from '../../core/services/campus-data.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Building, Room, QrCode } from '../../core/models/campus.model';
+import * as QRCode from 'qrcode';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +23,7 @@ export class DashboardComponent implements OnInit {
   qrCodes = signal<QrCode[]>([]);
   loading = signal<boolean>(true);
   activeTab = signal<string>('rooms');
+  qrCodeDataUrls = signal<{[key: string]: string}>({});
 
   switchTab(tabName: string) {
     this.activeTab.set(tabName);
@@ -178,14 +180,24 @@ export class DashboardComponent implements OnInit {
   loadCampusData() {
     this.loading.set(true);
     
-    // ForkJoin parallel fetches or mock loaders
     this.campusService.getBuildings().subscribe({
       next: (b) => this.buildings.set(b),
       error: (e) => console.error('Error fetching buildings', e)
     });
 
     this.campusService.getQrCodes().subscribe({
-      next: (q) => this.qrCodes.set(q),
+      next: async (q) => {
+        this.qrCodes.set(q);
+        
+        // Generate QR code images dynamically when gates load
+        const urls: {[key: string]: string} = {};
+        for (const qr of q) {
+          if (qr.id) {
+            urls[qr.id] = await this.generateQrUrl(qr.id);
+          }
+        }
+        this.qrCodeDataUrls.set(urls);
+      },
       error: (e) => console.error('Error fetching QR Codes', e)
     });
 
@@ -199,6 +211,99 @@ export class DashboardComponent implements OnInit {
         this.loading.set(false);
       }
     });
+  }
+
+  async generateQrUrl(gateId: string): Promise<string> {
+    const targetUrl = `https://college-compass-khit.vercel.app/ar-map.html?gate=${gateId}`;
+    try {
+      return await QRCode.toDataURL(targetUrl, {
+        width: 300,
+        margin: 2,
+        color: {
+          dark: '#0f172a',
+          light: '#ffffff'
+        }
+      });
+    } catch (err) {
+      console.error('Failed to generate QR Code:', err);
+      return '';
+    }
+  }
+
+  downloadQrCode(qr: QrCode) {
+    const dataUrl = this.qrCodeDataUrls()[qr.id || ''];
+    if (!dataUrl) return;
+    
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = `gate-${qr.id || 'code'}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  printQrCode(qr: QrCode) {
+    const dataUrl = this.qrCodeDataUrls()[qr.id || ''];
+    if (!dataUrl) return;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>Print QR Label - ${qr.locationName}</title>
+          <style>
+            body {
+              font-family: system-ui, -apple-system, sans-serif;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              margin: 0;
+              text-align: center;
+            }
+            .label-card {
+              border: 3px double #000;
+              padding: 30px;
+              border-radius: 12px;
+              max-width: 400px;
+            }
+            img {
+              width: 250px;
+              height: 250px;
+            }
+            h1 {
+              font-size: 24px;
+              margin: 10px 0 5px 0;
+            }
+            p {
+              font-size: 14px;
+              color: #555;
+              margin: 0 0 15px 0;
+            }
+            .scan-tip {
+              font-size: 11px;
+              color: #888;
+              font-weight: bold;
+              text-transform: uppercase;
+              letter-spacing: 1px;
+            }
+          </style>
+        </head>
+        <body onload="window.print(); window.close();">
+          <div class="label-card">
+            <div class="scan-tip">Scan to Navigate</div>
+            <h1>COLLEGE COMPASS</h1>
+            <p>${qr.locationName} (${qr.id})</p>
+            <img src="${dataUrl}" alt="QR Code Label">
+            <div style="font-size: 10px; color: #999; margin-top: 10px;">Destination Room: ${qr.targetRoomId}</div>
+          </div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
   }
 
   seedingStatus = signal<string | null>(null);
