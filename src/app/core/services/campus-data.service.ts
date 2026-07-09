@@ -197,6 +197,14 @@ export class CampusDataService {
         });
       }
 
+      // 5. Seed Admin Email
+      const adminRef = doc(this.firestore, 'admins/pakanatijayasri@gmail.com');
+      await setDoc(adminRef, {
+        email: 'pakanatijayasri@gmail.com',
+        role: 'admin',
+        createdAt: new Date().toISOString()
+      });
+
       console.log('Firestore Database successfully seeded with College Compass Main Block (Floor 3) data.');
     } catch (error) {
       console.error('Failed to seed Firestore data:', error);

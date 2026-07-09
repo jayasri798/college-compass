@@ -8,6 +8,7 @@ import {
   User 
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { Firestore, doc, getDoc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,7 @@ import { Router } from '@angular/router';
 export class AuthService {
   private auth = inject(Auth);
   private router = inject(Router);
+  private firestore = inject(Firestore);
 
   // Observable for auth state tracking
   user$ = user(this.auth);
@@ -25,22 +27,46 @@ export class AuthService {
   loading = signal<boolean>(true);
 
   constructor() {
-    this.user$.subscribe((authUser) => {
+    this.user$.subscribe(async (authUser) => {
       this.currentUser.set(authUser);
-      this.loading.set(false);
       
       if (authUser && authUser.email) {
         const email = authUser.email.toLowerCase();
-        // Admin criteria: Jaya Sri, college-compass domain, or general admin keywords
-        this.isAdmin.set(
-          email === 'pakanatijayasri@gmail.com' ||
-          email.endsWith('@college-compass.com') ||
-          email.startsWith('admin') ||
-          email.endsWith('@admin.com')
-        );
+        
+        // 1. Safety fallback for admins
+        if (email === 'pakanatijayasri@gmail.com' || email === 'chinthalacheruvuamareswar@gmail.com') {
+          this.isAdmin.set(true);
+          this.loading.set(false);
+          return;
+        }
+
+        // 2. Query Firestore admins collection
+        try {
+          const docRef = doc(this.firestore, `admins/${email}`);
+          const docSnap = await getDoc(docRef);
+          
+          if (docSnap.exists()) {
+            this.isAdmin.set(true);
+          } else {
+            // 3. Fallback to check standard dev domain patterns
+            this.isAdmin.set(
+              email.endsWith('@college-compass.com') ||
+              email.startsWith('admin') ||
+              email.endsWith('@admin.com')
+            );
+          }
+        } catch (error) {
+          console.error('Error fetching admin rules from Firestore:', error);
+          this.isAdmin.set(
+            email.endsWith('@college-compass.com') ||
+            email.startsWith('admin') ||
+            email.endsWith('@admin.com')
+          );
+        }
       } else {
         this.isAdmin.set(false);
       }
+      this.loading.set(false);
     });
   }
 
