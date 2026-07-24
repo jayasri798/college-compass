@@ -214,7 +214,7 @@ export class DashboardComponent implements OnInit {
   }
 
   async generateQrUrl(gateId: string): Promise<string> {
-    const targetUrl = `https://college-compass-khit.vercel.app/ar-map.html?gate=${gateId}`;
+    const targetUrl = `https://college-compass-cc.vercel.app/ar-map.html?gate=${gateId}`;
     try {
       return await QRCode.toDataURL(targetUrl, {
         width: 300,
